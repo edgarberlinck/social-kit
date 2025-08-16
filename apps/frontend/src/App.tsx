@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios, { type AxiosResponse, type AxiosError } from 'axios'; // Import AxiosResponse and AxiosError
+import api from './api/axios';
+ // Import AxiosResponse and AxiosError
 import styles from './App.module.css';
 
 interface PostResponse {
@@ -14,7 +15,7 @@ function App() {
 
   useEffect(() => {
     // Fetch hello message from backend
-    axios.get<string>(import.meta.env.VITE_API_BASE_URL) // Specify response type as string
+    api.get<string>('/') // Specify response type as string
       .then((response: AxiosResponse<string>) => setHelloMessage(response.data))
       .catch((error: AxiosError) => console.error('Error fetching hello message:', error)); // Explicitly type error
   }, []);
@@ -22,7 +23,7 @@ function App() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response: AxiosResponse<PostResponse> = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/message`, { message: kafkaMessage }); // Specify response type
+      const response: AxiosResponse<PostResponse> = await api.post('/message', { message: kafkaMessage }); // Specify response type
       setPostResponse(response.data);
     } catch (error: any) { // Use any for now, or define a more specific error type if needed
       console.error('Error posting message to Kafka:', error);
