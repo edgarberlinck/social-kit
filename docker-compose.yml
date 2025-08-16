@@ -89,6 +89,32 @@ services:
     networks:
       - social-kit-network
 
+  api-backoffice:
+    build:
+      context: ./apps/backoffice-backend
+      dockerfile: Dockerfile
+    container_name: api-backoffice
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: mysql://user:password@mysql:3306/social_kit
+    depends_on:
+      - mysql
+    networks:
+      - social-kit-network
+
+  backoffice-frontend:
+    build:
+      context: ./apps/backoffice-frontend
+      dockerfile: Dockerfile
+    container_name: backoffice-frontend
+    ports:
+      - "81:80"
+    depends_on:
+      - api-backoffice
+    networks:
+      - social-kit-network
+
   frontend:
     build:
       context: ./apps/frontend
