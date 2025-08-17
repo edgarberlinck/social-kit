@@ -1,23 +1,37 @@
-FROM node:18-alpine
+# Stage 1: Builder
+FROM node:20-alpine AS builder
 
-WORKDIR /usr/src/app
+WORKDIR /app/
 
-# Copy package.json and package-lock.json for the root project
+# Copy root package.json and lockfile
 COPY package*.json ./
 
-# Install root dependencies (this will also install shared/database dependencies if linked)
-RUN npm install
-
-# Copy the entire project from the build context (which is the root)
+# Copy all source code
 COPY . .
 
-# Build the shared database package
-RUN npm run build --workspace packages/shared/database
+# Install dependencies (root + all workspaces)
+RUN npm ci
 
-# Build the publish-service application
-RUN npm run build --workspace apps/publish-service
+# Build all workspaces
+RUN npm run build --workspaces
 
-# Set working directory to the publish-service app
-WORKDIR /usr/src/app/apps/publish-service
+# Stage 2: Production
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy root package.json
+COPY --from=builder /app/package*.json ./
+
+# Copy publish-service app
+COPY --from=builder /app/apps/publish-service ./apps/publish-service
+
+# Copy built shared package
+COPY --from=builder /app/packages/shared/database/dist ./packages/shared/database/dist
+
+# Install only production dependencies of publish-service
+RUN npm ci --workspace apps/publish-service --omit=dev
+
+WORKDIR /app/apps/publish-service
 
 CMD ["node", "dist/main"]

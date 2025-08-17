@@ -1,7 +1,7 @@
 .PHONY: up down build rebuild
 
 up:
-	docker compose up
+	docker compose up -d --build
 
 down:
 	docker compose down --remove-orphans
