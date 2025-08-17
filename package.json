@@ -4,12 +4,13 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/shared/*"
   ],
   "scripts": {
     "build": "npm run build --workspaces",
     "start": "npm start --workspaces",
-    "test": "npm test --workspaces"
+    "test": "npm test --workspaces",
+    "prisma:generate": "prisma generate --schema=packages/shared/database/prisma/schema.prisma"
   },
   "devDependencies": {
     "@types/supertest": "^6.0.3",

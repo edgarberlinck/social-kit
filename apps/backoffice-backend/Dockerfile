@@ -10,7 +10,7 @@ COPY package*.json ./
 COPY . .
 
 # Install dependencies (root + all workspaces)
-RUN npm ci
+RUN npm install
 
 # Build all workspaces
 RUN npm run build --workspaces

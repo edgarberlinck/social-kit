@@ -10,8 +10,7 @@ import { EmailModule } from './email/email.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    DatabaseModule.forRootAsync({
+    DatabaseModule,
     KafkaModule,
     AuthModule,
     EmailModule,

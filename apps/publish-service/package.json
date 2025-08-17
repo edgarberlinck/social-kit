@@ -23,7 +23,6 @@
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
-    
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
@@ -32,12 +31,10 @@
     "class-validator": "^0.14.2",
     "nodemailer": "^7.0.5",
     "passport-jwt": "^4.0.1",
-    
     "kafkajs": "^2.2.4",
-    
     "reflect-metadata": "0.1.13",
     "rxjs": "^7.8.1",
-    "@social-kit/database": "file:../../packages/shared/database"
+    "@social-kit/database": "*"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

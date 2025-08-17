@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './schemas/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailModule } from '../email/email.module';
+import { DatabaseModule } from '@social-kit/database';
 
 @Module({
   imports: [
@@ -20,7 +19,7 @@ import { EmailModule } from '../email/email.module';
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    DatabaseModule,
     EmailModule,
   ],
   providers: [AuthService, JwtStrategy],

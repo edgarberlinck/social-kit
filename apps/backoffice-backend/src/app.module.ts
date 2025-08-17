@@ -10,9 +10,7 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    DatabaseModule.forRoot(
-      process.env.MONGODB_URI ?? 'mongodb://localhost:27017/socialkit',
-    ),
+    DatabaseModule,
     KafkaModule,
     EmailModule,
     AuthModule,
