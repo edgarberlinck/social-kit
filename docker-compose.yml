@@ -82,8 +82,8 @@ services:
 
   api-backend:
     build:
-      context: ./apps/backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
     container_name: api-backend
     ports:
       - "3000:3000"
@@ -101,8 +101,8 @@ services:
 
   api-backoffice:
     build:
-      context: ./apps/backoffice-backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/backoffice-backend/Dockerfile
     container_name: api-backoffice-backend
     ports:
       - "4000:3000"
@@ -120,8 +120,8 @@ services:
 
   publish-service:
     build:
-      context: ./apps/publish-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/publish-service/Dockerfile
     container_name: publish-service
     environment:
       DATABASE_URL: mysql://user:password@mysql:3306/social_kit

@@ -1,0 +1,22 @@
+{
+  "name": "database",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.14.0",
+    "@types/node": "^24.3.0",
+    "prisma": "^6.14.0",
+    "typescript": "^5.9.2",
+    "@nestjs/mongoose": "^11.0.3",
+    "mongoose": "^8.17.1"
+  }
+}
