@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
@@ -15,23 +18,23 @@ describe('Auth E2E', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-    .overrideProvider(ConfigService)
-    .useValue({
-      get: jest.fn((key: string) => {
-        if (key === 'MONGO_URI') {
-          return 'mongodb://localhost:27017/social_kit_test';
-        }
-        if (key === 'JWT_SECRET') {
-          return 'testsecret';
-        }
-        return null;
-      }),
-    })
-    .overrideProvider(EmailService)
-    .useValue({
-      sendEmail: jest.fn(),
-    })
-    .compile();
+      .overrideProvider(ConfigService)
+      .useValue({
+        get: jest.fn((key: string) => {
+          if (key === 'MONGO_URI') {
+            return 'mongodb://localhost:27017/social_kit_test';
+          }
+          if (key === 'JWT_SECRET') {
+            return 'testsecret';
+          }
+          return null;
+        }),
+      })
+      .overrideProvider(EmailService)
+      .useValue({
+        sendEmail: jest.fn(),
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -95,11 +98,15 @@ describe('Auth E2E', () => {
       })
       .expect(201);
 
-    const user = await dbConnection.collection('users').findOne({ email: 'activate@example.com' });
+    const user = await dbConnection
+      .collection('users')
+      .findOne({ email: 'activate@example.com' });
     if (!user) throw new Error('User not found');
 
     return request(app.getHttpServer())
-      .get(`/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`)
+      .get(
+        `/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`,
+      )
       .expect(200)
       .expect((res) => {
         expect(res.text).toEqual('Account activated successfully!');
@@ -134,11 +141,15 @@ describe('Auth E2E', () => {
       })
       .expect(201);
 
-    const user = await dbConnection.collection('users').findOne({ email: 'login@example.com' });
+    const user = await dbConnection
+      .collection('users')
+      .findOne({ email: 'login@example.com' });
     if (!user) throw new Error('User not found');
 
     await request(app.getHttpServer())
-      .get(`/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`)
+      .get(
+        `/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`,
+      )
       .expect(200);
 
     return request(app.getHttpServer())
@@ -185,11 +196,15 @@ describe('Auth E2E', () => {
       })
       .expect(201);
 
-    const user = await dbConnection.collection('users').findOne({ email: 'invalidcreds@example.com' });
+    const user = await dbConnection
+      .collection('users')
+      .findOne({ email: 'invalidcreds@example.com' });
     if (!user) throw new Error('User not found');
 
     await request(app.getHttpServer())
-      .get(`/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`)
+      .get(
+        `/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`,
+      )
       .expect(200);
 
     return request(app.getHttpServer())
@@ -214,11 +229,15 @@ describe('Auth E2E', () => {
       })
       .expect(201);
 
-    const user = await dbConnection.collection('users').findOne({ email: 'me@example.com' });
+    const user = await dbConnection
+      .collection('users')
+      .findOne({ email: 'me@example.com' });
     if (!user) throw new Error('User not found');
 
     await request(app.getHttpServer())
-      .get(`/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`)
+      .get(
+        `/auth/activate?token=${user.emailConfirmationToken}&email=${user.email}`,
+      )
       .expect(200);
 
     const loginRes = await request(app.getHttpServer())
@@ -243,8 +262,6 @@ describe('Auth E2E', () => {
   });
 
   it('/auth/me (GET) - unauthorized access', () => {
-    return request(app.getHttpServer())
-      .get('/auth/me')
-      .expect(401);
+    return request(app.getHttpServer()).get('/auth/me').expect(401);
   });
 });

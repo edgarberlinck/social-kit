@@ -17,7 +17,8 @@ describe('Auth E2E', () => {
           providers: [
             {
               provide: 'MONGO_URI_TEST',
-              useValue: process.env.MONGO_URI = 'mongodb://localhost:27017/test_db',
+              useValue: (process.env.MONGO_URI =
+                'mongodb://localhost:27017/test_db'),
             },
           ],
         },
@@ -36,7 +37,11 @@ describe('Auth E2E', () => {
   it('/auth/register (POST) - successful registration', () => {
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({ email: 'test@example.com', password: 'password123', fullName: 'Test User' })
+      .send({
+        email: 'test@example.com',
+        password: 'password123',
+        fullName: 'Test User',
+      })
       .expect(201);
   });
 });

@@ -10,7 +10,9 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
   constructor(private configService: ConfigService) {
     this.kafka = new Kafka({
       clientId: 'kafka-consumer-microservice',
-      brokers: [this.configService.get<string>('KAFKA_BROKER') || 'localhost:9092'],
+      brokers: [
+        this.configService.get<string>('KAFKA_BROKER') || 'localhost:9092',
+      ],
     });
     this.consumer = this.kafka.consumer({ groupId: 'my-group' });
   }
@@ -20,7 +22,8 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
     await this.consumer.subscribe({ topic: 'my-topic', fromBeginning: true });
 
     await this.consumer.run({
-      eachMessage: async ({ topic, partition, message }: EachMessagePayload) => {
+      eachMessage: async ({ message }: EachMessagePayload) => {
+        await Promise.resolve(); // Add this line to fix the error
         if (!message.value) {
           return;
         }

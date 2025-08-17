@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
@@ -32,11 +36,17 @@ export class AuthService {
       const user = await newUser.save();
 
       const activationLink = `http://localhost:3000/auth/activate?token=${emailConfirmationToken}&email=${user.email}`;
-      await this.emailService.sendEmail(user.email, 'Activate your account', `Please activate your account by clicking on this link: ${activationLink}`);
+      await this.emailService.sendEmail(
+        user.email,
+        'Activate your account',
+        `Please activate your account by clicking on this link: ${activationLink}`,
+      );
 
       return user;
-    } catch (error) {
-      if (error.code === 11000) { // Duplicate key error
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.code === 11000) {
+        // Duplicate key error
         throw new ConflictException('Email already registered');
       }
       throw error;
@@ -44,7 +54,9 @@ export class AuthService {
   }
 
   async activateAccount(email: string, token: string): Promise<boolean> {
-    const user = await this.userModel.findOne({ email, emailConfirmationToken: token }).exec();
+    const user = await this.userModel
+      .findOne({ email, emailConfirmationToken: token })
+      .exec();
 
     if (!user) {
       return false;
@@ -68,7 +80,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(loginUserDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      loginUserDto.password,
+      user.password,
+    );
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
@@ -78,7 +93,11 @@ export class AuthService {
       throw new UnauthorizedException('Please confirm your email address');
     }
 
-    const payload = { email: user.email, sub: user._id, fullName: user.fullName };
+    const payload = {
+      email: user.email,
+      sub: user._id,
+      fullName: user.fullName,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

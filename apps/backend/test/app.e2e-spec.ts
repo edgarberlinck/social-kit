@@ -12,17 +12,17 @@ describe('AppController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-    .overrideProvider(ConfigService) // Override ConfigService
-    .useValue({
-      get: (key: string) => {
-        if (key === 'MONGO_URI') {
-          return 'mongodb://localhost:27017/test_db';
-        }
-        // Add other config values if needed for tests
-        return process.env[key]; // Fallback to actual env for other configs
-      },
-    })
-    .compile();
+      .overrideProvider(ConfigService) // Override ConfigService
+      .useValue({
+        get: (key: string) => {
+          if (key === 'MONGO_URI') {
+            return 'mongodb://localhost:27017/test_db';
+          }
+          // Add other config values if needed for tests
+          return process.env[key]; // Fallback to actual env for other configs
+        },
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();

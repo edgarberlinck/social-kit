@@ -16,7 +16,6 @@ jest.mock('nodemailer', () => {
 
 describe('EmailService', () => {
   let service: EmailService;
-  let configService: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,13 +26,20 @@ describe('EmailService', () => {
           useValue: {
             get: jest.fn((key: string) => {
               switch (key) {
-                case 'SMTP_HOST': return 'test-smtp.com';
-                case 'SMTP_PORT': return 587;
-                case 'SMTP_SECURE': return false;
-                case 'SMTP_USER': return 'testuser';
-                case 'SMTP_PASSWORD': return 'testpass';
-                case 'EMAIL_FROM': return 'test@example.com';
-                default: return null;
+                case 'SMTP_HOST':
+                  return 'test-smtp.com';
+                case 'SMTP_PORT':
+                  return 587;
+                case 'SMTP_SECURE':
+                  return false;
+                case 'SMTP_USER':
+                  return 'testuser';
+                case 'SMTP_PASSWORD':
+                  return 'testpass';
+                case 'EMAIL_FROM':
+                  return 'test@example.com';
+                default:
+                  return null;
               }
             }),
           },
@@ -72,8 +78,7 @@ describe('EmailService', () => {
 
     await service.sendEmail(to, subject, body);
 
-    // Access the mockSendMail through the mocked nodemailer.createTransport instance
-    const mockedTransporter = (nodemailer.createTransport as jest.Mock).mock.results[0].value;
+    const mockedTransporter = nodemailer.createTransport();
     expect(mockedTransporter.sendMail).toHaveBeenCalledWith({
       from: 'test@example.com',
       to,
@@ -83,16 +88,17 @@ describe('EmailService', () => {
   });
 
   it('should throw an error if email sending fails', async () => {
-    // Access the mockSendMail through the mocked nodemailer.createTransport instance
-    const mockedTransporter = (nodemailer.createTransport as jest.Mock).mock.results[0].value;
-    mockedTransporter.sendMail.mockImplementationOnce(() => {
-      throw new Error('Failed to send email');
-    });
+    const mockedTransporter = nodemailer.createTransport();
+    (mockedTransporter.sendMail as jest.Mock).mockRejectedValueOnce(
+      new Error('Failed to send email'),
+    );
 
     const to = 'recipient@example.com';
     const subject = 'Test Subject';
     const body = 'Test Body';
 
-    await expect(service.sendEmail(to, subject, body)).rejects.toThrow('Failed to send email');
+    await expect(service.sendEmail(to, subject, body)).rejects.toThrow(
+      'Failed to send email',
+    );
   });
 });
