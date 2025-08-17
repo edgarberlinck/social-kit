@@ -45,6 +45,14 @@ services:
     networks:
       - social-kit-network
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - social-kit-network
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -52,6 +60,23 @@ services:
       - "27017:27017"
     volumes:
       - mongodb-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - social-kit-network
+  mongo-express:
+    image: mongo-express
+    depends_on:
+      - mongodb
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
     networks:
       - social-kit-network
 
@@ -66,6 +91,7 @@ services:
       DATABASE_URL: mysql://user:password@mysql:3306/social_kit
       MONGO_URI: mongodb://mongodb:27017/social_kit
       KAFKA_BROKER: kafka:9092
+      JWT_SECRET: "PAVAROTI"
     depends_on:
       - mysql
       - mongodb
@@ -105,7 +131,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3001:3000"
+      - "9999:3000"
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/

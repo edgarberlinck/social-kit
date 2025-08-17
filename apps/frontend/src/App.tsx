@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import api from './api/axios';
- // Import AxiosResponse and AxiosError
-import styles from './App.module.css';
+import { useState, useEffect } from "react";
+import api from "./api/axios";
+import styles from "./App.module.css";
 
 interface PostResponse {
   status: string;
@@ -9,25 +8,34 @@ interface PostResponse {
 }
 
 function App() {
-  const [helloMessage, setHelloMessage] = useState('');
-  const [kafkaMessage, setKafkaMessage] = useState('');
+  const [helloMessage, setHelloMessage] = useState("");
+  const [kafkaMessage, setKafkaMessage] = useState("");
   const [postResponse, setPostResponse] = useState<PostResponse | null>(null); // Use the defined interface
 
   useEffect(() => {
     // Fetch hello message from backend
-    api.get<string>('/') // Specify response type as string
-      .then((response: AxiosResponse<string>) => setHelloMessage(response.data))
-      .catch((error: AxiosError) => console.error('Error fetching hello message:', error)); // Explicitly type error
+    api
+      .get<string>("/") // Specify response type as string
+      .then((response: Axios.AxiosXHR<string>) =>
+        setHelloMessage(response.data)
+      )
+      .catch((error) => console.error("Error fetching hello message:", error)); // Explicitly type error
   }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response: AxiosResponse<PostResponse> = await api.post('/message', { message: kafkaMessage }); // Specify response type
+      const response: Axios.AxiosXHR<PostResponse> = await api.post(
+        "/message",
+        {
+          message: kafkaMessage,
+        }
+      ); // Specify response type
       setPostResponse(response.data);
-    } catch (error: any) { // Use any for now, or define a more specific error type if needed
-      console.error('Error posting message to Kafka:', error);
-      setPostResponse({ status: 'Error sending message' });
+    } catch (error: any) {
+      // Use any for now, or define a more specific error type if needed
+      console.error("Error posting message to Kafka:", error);
+      setPostResponse({ status: "Error sending message" });
     }
   };
 
@@ -49,7 +57,9 @@ function App() {
           placeholder="Enter message"
           className={styles.input}
         />
-        <button type="submit" className={styles.button}>Send to Kafka</button>
+        <button type="submit" className={styles.button}>
+          Send to Kafka
+        </button>
       </form>
 
       {postResponse && (
