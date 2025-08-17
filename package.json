@@ -9,7 +9,10 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "start": "npm start --workspaces",
-    "test": "npm test --workspaces"
+    "test": "npm test --workspaces",
+    "generate:prisma": "prisma generate --schema=apps/backend/prisma/schema.prisma",
+    "generate:prisma:backoffice": "prisma generate --schema=apps/backoffice-backend/prisma/schema.prisma",
+    "generate:prisma:consumer": "prisma generate --schema=apps/publish-service/prisma/schema.prisma"
   },
   "devDependencies": {
     "@types/supertest": "^6.0.3",
